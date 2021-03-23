@@ -1,11 +1,18 @@
-import 'package:app/domain/models/account.dart';
+import '../http/http.dart';
+import '../../domain/models/models.dart';
 
-class RemoteAccountModel{
+class RemoteAccountModel {
   final String accessToken;
 
   RemoteAccountModel(this.accessToken);
 
-  factory RemoteAccountModel.fromJson(Map json) => RemoteAccountModel(json['accessToken']);
+  factory RemoteAccountModel.fromJson(Map json) {
+    if(!json.containsKey('accessToken'))
+      throw HttpError.invalideData;
+
+    return RemoteAccountModel(json['accessToken']);
+  }
+
 
   Account toModel() =>
       Account(this.accessToken);
