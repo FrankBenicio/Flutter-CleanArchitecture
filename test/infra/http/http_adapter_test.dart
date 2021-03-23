@@ -21,11 +21,19 @@ class HttpAdapter {
 }
 
 void main() {
+  HttpAdapter sut;
+  ClientSpy client;
+  String url;
+  
+  setUp((){
+    client = ClientSpy();
+    sut = HttpAdapter(client);
+    url = faker.internet.httpUrl();
+  });
+  
+  
   group('post', () {
     test('Should call post with values', () async {
-      final client = ClientSpy();
-      final sut = HttpAdapter(client);
-      final url = faker.internet.httpUrl();
 
       await sut.request(url: url, method: 'post');
 
