@@ -6,18 +6,19 @@ import '../../domain/models/models.dart';
 import '../http/http.dart';
 import 'package:meta/meta.dart';
 
-class RemoteAuthentication {
+class RemoteAuthentication implements Authentication {
   final HttpClient httpClient;
   final String url;
 
   RemoteAuthentication({@required this.httpClient, @required this.url});
 
+  @override
   Future<Account> auth(AuthenticationParams params) async {
     final body = RemoteAuthenticationParams.fromDomain(params).toJson();
 
     try {
       final httpResponse =
-          await httpClient.request(url: url, method: 'post', body: body);
+      await httpClient.request(url: url, method: 'post', body: body);
 
       return RemoteAccountModel.fromJson(httpResponse).toModel();
     } on HttpError catch (error) {
@@ -26,6 +27,7 @@ class RemoteAuthentication {
           : DomainError.unexpected;
     }
   }
+
 }
 
 class RemoteAuthenticationParams {
