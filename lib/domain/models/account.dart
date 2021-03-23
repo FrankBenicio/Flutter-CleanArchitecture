@@ -3,6 +3,4 @@ class Account{
 
   Account(this.token);
 
-
-  factory Account.fromJson(Map json) => Account(json['accessToken']);
 }

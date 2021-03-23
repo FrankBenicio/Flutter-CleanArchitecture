@@ -1,6 +1,7 @@
-import 'package:app/domain/helpers/domain_error.dart';
-import 'package:app/domain/models/models.dart';
-import 'package:app/domain/usecases/usecases.dart';
+import '../../domain/usecases/usecases.dart';
+import '../../data/models/models.dart';
+import '../../domain/helpers/domain_error.dart';
+import '../../domain/models/models.dart';
 
 import '../http/http.dart';
 import 'package:meta/meta.dart';
@@ -15,20 +16,19 @@ class RemoteAuthentication {
     final body = RemoteAuthenticationParams.fromDomain(params).toJson();
 
     try {
-     final httpResponse = await httpClient.request(url: url, method: 'post', body: body);
+      final httpResponse =
+          await httpClient.request(url: url, method: 'post', body: body);
 
-     return Account.fromJson(httpResponse);
-
-    } on HttpError catch(error){
+      return RemoteAccountModel.fromJson(httpResponse).toModel();
+    } on HttpError catch (error) {
       throw error == HttpError.unauthorized
-          ?  DomainError.invalidCredentials
-          :  DomainError.unexpected;
+          ? DomainError.invalidCredentials
+          : DomainError.unexpected;
     }
   }
 }
 
-
-class RemoteAuthenticationParams{
+class RemoteAuthenticationParams {
   final String email;
   final String password;
 
