@@ -131,7 +131,7 @@ void main() {
 
       final future  =  sut.request(url: url, method: 'post');
 
-      expect(future, throwsA(HttpError.forbidden));
+      expect(future, throwsA(HttpError.notFound));
     });
 
   });
