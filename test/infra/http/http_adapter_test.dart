@@ -22,7 +22,7 @@ void main() {
 
   group('shared', (){
     test('Should throw ServerError if invalid method is provided', () async {
-   final future =   await sut
+   final future =   sut
           .request(url: url, method: 'invalid_method');
 
      expect(future, throwsA(HttpError.serverError));
