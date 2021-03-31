@@ -1,7 +1,7 @@
-import 'package:app/data/http/http.dart';
-import 'package:app/data/usecases/usecases.dart';
-import 'package:app/domain/helpers/helpers.dart';
-import 'package:app/domain/usecases/usecases.dart';
+import 'package:ForDev/data/http/http.dart';
+import 'package:ForDev/data/usecases/usecases.dart';
+import 'package:ForDev/domain/helpers/helpers.dart';
+import 'package:ForDev/domain/usecases/usecases.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
