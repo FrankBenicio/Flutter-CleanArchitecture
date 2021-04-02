@@ -1,8 +1,14 @@
-import '../components/components.dart';
-import '../styles/styles.dart';
+import 'login_presenter.dart';
+import '../../components/components.dart';
+import '../../styles/styles.dart';
+
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
+  final LoginPresenter presenter;
+
+  LoginPage(this.presenter);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +17,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             LoginHeader(),
-            Headline1(text:"Login"),
+            Headline1(text: "Login"),
             Padding(
               padding: EdgeInsets.all(32),
               child: Form(
@@ -25,6 +31,7 @@ class LoginPage extends StatelessWidget {
                             color: primaryColorLight,
                           )),
                       keyboardType: TextInputType.emailAddress,
+                      onChanged: presenter.validateEmail,
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 8, bottom: 32),
@@ -36,6 +43,7 @@ class LoginPage extends StatelessWidget {
                               color: primaryColorLight,
                             )),
                         obscureText: true,
+                        onChanged: presenter.validatePassword,
                       ),
                     ),
                     RaisedButton(
@@ -57,6 +65,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
-
-
