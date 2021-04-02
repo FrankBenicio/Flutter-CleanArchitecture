@@ -12,17 +12,22 @@ void main() {
   LoginPresenter presenter;
   StreamController<String> emailErrorController;
   StreamController<String> passwordErrorController;
+  StreamController<bool> isFormValidController;
 
   Future loadPage(WidgetTester tester) async {
     presenter = LoginPresenterSpy();
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
+    isFormValidController = StreamController<bool>();
 
     when(presenter.emailErrorStream)
         .thenAnswer((_) => emailErrorController.stream);
 
     when(presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
+
+    when(presenter.isFormValidStream)
+        .thenAnswer((_) => isFormValidController.stream);
 
     final loginPage = MaterialApp(
       home: LoginPage(presenter),
@@ -33,7 +38,10 @@ void main() {
 
   tearDown(() {
     emailErrorController.close();
+
     passwordErrorController.close();
+
+    isFormValidController.close();
   });
 
   testWidgets('Should load with correct initial state',
@@ -108,55 +116,68 @@ void main() {
   });
 
   testWidgets('Should present error if email is valid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        emailErrorController.add('');
+    emailErrorController.add('');
 
-        await tester.pump();
+    await tester.pump();
 
-        final emailTextChield = find.descendant(
-            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
+    final emailTextChield = find.descendant(
+        of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
 
-        expect(emailTextChield, findsOneWidget);
-      });
+    expect(emailTextChield, findsOneWidget);
+  });
 
   testWidgets('Should present error if password is invalid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        passwordErrorController.add('any error');
+    passwordErrorController.add('any error');
 
-        await tester.pump();
+    await tester.pump();
 
-        expect(find.text('any error'), findsOneWidget);
-      });
-
-  testWidgets('Should present error if password is valid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
-
-        passwordErrorController.add(null);
-
-        await tester.pump();
-
-        final passwordTextChield = find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
-
-        expect(passwordTextChield, findsOneWidget);
-      });
+    expect(find.text('any error'), findsOneWidget);
+  });
 
   testWidgets('Should present error if password is valid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        passwordErrorController.add('');
+    passwordErrorController.add(null);
 
-        await tester.pump();
+    await tester.pump();
 
-        final passwordTextChield = find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
+    final passwordTextChield = find.descendant(
+        of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
 
-        expect(passwordTextChield, findsOneWidget);
-      });
+    expect(passwordTextChield, findsOneWidget);
+  });
+
+  testWidgets('Should present error if password is valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    passwordErrorController.add('');
+
+    await tester.pump();
+
+    final passwordTextChield = find.descendant(
+        of: find.bySemanticsLabel('Senha'), matching: find.byType(Text));
+
+    expect(passwordTextChield, findsOneWidget);
+  });
+
+  testWidgets('Should enable button if form is valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    isFormValidController.add(true);
+
+    await tester.pump();
+
+    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+
+    expect(button.onPressed, isNotNull);
+  });
 }
