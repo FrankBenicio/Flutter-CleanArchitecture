@@ -223,8 +223,7 @@ void main() {
     verify(presenter.auth()).called(1);
   });
 
-  testWidgets('Should present loading',
-      (WidgetTester tester) async {
+  testWidgets('Should present loading', (WidgetTester tester) async {
     await loadPage(tester);
 
     isLoadingController.add(true);
@@ -233,27 +232,33 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
+  testWidgets('Should hide loading', (WidgetTester tester) async {
+    await loadPage(tester);
 
-  testWidgets('Should hide loading',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+    isLoadingController.add(true);
+    await tester.pump();
 
-        isLoadingController.add(true);
-        await tester.pump();
+    isLoadingController.add(false);
+    await tester.pump();
 
-        isLoadingController.add(false);
-        await tester.pump();
-
-        expect(find.byType(CircularProgressIndicator), findsNothing);
-      });
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
 
   testWidgets('Should present error message if authentication fails',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        mainErrorController.add('any main error');
-        await tester.pump();
+    mainErrorController.add('any main error');
+    await tester.pump();
 
-        expect(find.text('any main error'), findsOneWidget);
-      });
+    expect(find.text('any main error'), findsOneWidget);
+  });
+
+  testWidgets('Should close streams on dispose', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    addTearDown(() {
+      verify(presenter.dispose()).called(1);
+    });
+  });
 }
