@@ -1,3 +1,4 @@
+import 'package:ForDev/domain/models/models.dart';
 import 'package:ForDev/domain/usecases/usecases.dart';
 import 'package:ForDev/presentation/presenters/presenters.dart';
 import 'package:ForDev/presentation/protocols/protocols.dart';
@@ -27,6 +28,12 @@ void main() {
     mockValidationCall(field).thenReturn(value);
   }
 
+  PostExpectation mockAuthenticationCall() => when(authentication.auth(any));
+
+  void mockAuthentication() {
+    mockAuthenticationCall().thenAnswer((_) async => Account(faker.guid.guid()));
+  }
+
   setUp(() {
     validation = ValidationSpy();
 
@@ -39,6 +46,8 @@ void main() {
     password = faker.internet.password();
 
     mockValidation();
+
+    mockAuthentication();
   });
 
   test('Should call validation with correct email', () {
@@ -130,8 +139,20 @@ void main() {
 
     sut.validatePassword(password);
 
-   await sut.auth();
+    await sut.auth();
 
-   verify(authentication.auth(AuthenticationParams(email: email, secret: password))).called(1);
+    verify(authentication.auth(AuthenticationParams(email: email, secret: password))).called(1);
+  });
+
+  test('Should emit correct events on Authentication success', () async{
+    sut.validateEmail(email);
+
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true,false]));
+
+
+    await sut.auth();
+
   });
 }
