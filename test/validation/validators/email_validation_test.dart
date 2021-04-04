@@ -29,4 +29,10 @@ void main() {
 
     expect(error, null);
   });
+
+  test('Should return null if email is valid', () {
+    final emailValid = sut.validate('frankbenicio.dev@gmail.com');
+
+    expect(emailValid, null);
+  });
 }
