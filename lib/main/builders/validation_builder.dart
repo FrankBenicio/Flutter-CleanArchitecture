@@ -2,6 +2,9 @@ import '../../validation/protocols/protocols.dart';
 import '../../validation/validators/validators.dart';
 
 class ValidationBuilder {
+
+  ValidationBuilder._();
+
   static ValidationBuilder _intance;
 
   String fieldName;
@@ -9,7 +12,7 @@ class ValidationBuilder {
   List<FieldValidation> validations = [];
 
   static ValidationBuilder field(String fieldName) {
-    _intance = ValidationBuilder();
+    _intance = ValidationBuilder._();
 
     _intance.fieldName = fieldName;
 
