@@ -1,3 +1,4 @@
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'components/components.dart';
@@ -16,10 +17,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  void _hideKeyboard(){
+  void _hideKeyboard() {
     final currentFocus = FocusScope.of(context);
-    if(!currentFocus.hasPrimaryFocus)
-      currentFocus.unfocus();
+    if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
   }
 
   @override
@@ -37,7 +37,13 @@ class _LoginPageState extends State<LoginPage> {
 
           widget.presenter.mainErrorStream.listen((error) {
             if (error != null) {
-             showErrorMessage(context, error);
+              showErrorMessage(context, error);
+            }
+          });
+
+          widget.presenter.navigateToStream.listen((page) {
+            if (page?.isNotEmpty == true) {
+              Get.offAllNamed(page);
             }
           });
 
@@ -87,8 +93,3 @@ class _LoginPageState extends State<LoginPage> {
     widget.presenter.dispose();
   }
 }
-
-
-
-
-

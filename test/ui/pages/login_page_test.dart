@@ -4,6 +4,7 @@ import 'package:ForDev/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
@@ -13,6 +14,7 @@ void main() {
   StreamController<String> emailErrorController;
   StreamController<String> passwordErrorController;
   StreamController<String> mainErrorController;
+  StreamController<String> navigateToController;
   StreamController<bool> isFormValidController;
   StreamController<bool> isLoadingController;
 
@@ -20,6 +22,7 @@ void main() {
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
     mainErrorController = StreamController<String>();
+    navigateToController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
   }
@@ -39,6 +42,9 @@ void main() {
 
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
+
+    when(presenter.navigateToStream)
+        .thenAnswer((_) => navigateToController.stream);
   }
 
   void closeStreams() {
@@ -51,6 +57,8 @@ void main() {
     isFormValidController.close();
 
     isLoadingController.close();
+
+    navigateToController.close();
   }
 
   Future loadPage(WidgetTester tester) async {
@@ -60,8 +68,16 @@ void main() {
 
     mockStreams();
 
-    final loginPage = MaterialApp(
-      home: LoginPage(presenter),
+    final loginPage = GetMaterialApp(
+      initialRoute: '/login',
+      getPages: [
+        GetPage(name: '/login', page: () => LoginPage(presenter)),
+        GetPage(
+            name: '/any_router',
+            page: () => Scaffold(
+                  body: Text('fake page'),
+                ))
+      ],
     );
 
     await tester.pumpWidget(loginPage);
@@ -273,5 +289,16 @@ void main() {
     addTearDown(() {
       verify(presenter.dispose()).called(1);
     });
+  });
+
+  testWidgets('Should change page', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    navigateToController.add('/any_router');
+    await tester.pumpAndSettle();
+
+    expect(Get.currentRoute, '/any_router');
+
+    expect(find.text('fake page'), findsOneWidget);
   });
 }
