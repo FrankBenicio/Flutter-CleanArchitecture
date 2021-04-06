@@ -13,11 +13,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.0
+  cupertino_icons:
   http:
   provider:
   equatable:
   get:
+  flutter_secure_storage:
 
 dev_dependencies:
   flutter_test:
