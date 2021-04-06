@@ -35,17 +35,22 @@ void main() {
 
   Account account;
 
-  setUp((){
+  setUp(() {
     saveSecureCacheStorage = SaveSecureCacheStorageSpy();
 
     sut =
-    LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
+        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
 
     account = Account(faker.guid.guid());
   });
 
-  test('Should call SaveSecureCacheStorage with correct values', () async {
+  void mockError() {
+    when(saveSecureCacheStorage.saveSecure(
+            key: anyNamed('key'), value: anyNamed('value')))
+        .thenThrow(Exception());
+  }
 
+  test('Should call SaveSecureCacheStorage with correct values', () async {
     await sut.save(account);
 
     verify(
@@ -54,10 +59,7 @@ void main() {
 
   test('Should thrown UnexpectedError if SaveSecureCacheStorage throws',
       () async {
-
-    when(saveSecureCacheStorage.saveSecure(
-            key: anyNamed('key'), value: anyNamed('value')))
-        .thenThrow(Exception());
+    mockError();
 
     final future = sut.save(account);
 
