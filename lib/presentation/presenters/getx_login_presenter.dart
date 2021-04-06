@@ -33,7 +33,9 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   Stream<bool> get isLoadingStream => _isLoading.stream;
 
   GetXLoginPresenter(
-      {@required this.validation, @required this.authentication, @required this.saveCurrentAccount});
+      {@required this.validation,
+      @required this.authentication,
+      @required this.saveCurrentAccount});
 
   void validateEmail(String email) {
     _email = email;
@@ -56,18 +58,17 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   }
 
   Future auth() async {
-    _isLoading.value = true;
-
     try {
-    final account = await authentication
+      _isLoading.value = true;
+      final account = await authentication
           .auth(AuthenticationParams(email: _email, secret: _password));
 
       await saveCurrentAccount.save(account);
-
     } on DomainError catch (error) {
       _mainError.value = error.description;
+
+      _isLoading.value = false;
     }
-    _isLoading.value = false;
   }
 
   void dispose() {}
