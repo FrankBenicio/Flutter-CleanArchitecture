@@ -9,7 +9,8 @@ class GetXSplashPresenter implements SplashPresenter {
 
   var _navigateTo = RxString();
 
-  Future checkAccount() async {
+  Future checkAccount({int durationInSeconds = 3}) async {
+   await Future.delayed(Duration(seconds: durationInSeconds));
     try {
       final account = await loadCurrentAccount.load();
       _navigateTo.value = account == null ? '/login' : '/surveys';
