@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 import 'package:meta/meta.dart';
 
 class GetXSplashPresenter implements SplashPresenter {
-
   final LoadCurrentAccount loadCurrentAccount;
 
   var _navigateTo = RxString();
@@ -20,13 +19,19 @@ class GetXSplashPresenter implements SplashPresenter {
   GetXSplashPresenter({@required this.loadCurrentAccount});
 }
 
-class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount{}
+class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
 void main() {
-  test('Should call LoadCurrentAccount', () async {
-    final loadCurrentAccount = LoadCurrentAccountSpy();
-    final sut = GetXSplashPresenter(loadCurrentAccount: loadCurrentAccount);
+  LoadCurrentAccountSpy loadCurrentAccount;
+  GetXSplashPresenter sut;
 
+  setUp(() {
+    loadCurrentAccount = LoadCurrentAccountSpy();
+
+    sut = GetXSplashPresenter(loadCurrentAccount: loadCurrentAccount);
+  });
+
+  test('Should call LoadCurrentAccount', () async {
     await sut.checkAccount();
 
     verify(loadCurrentAccount.load()).called(1);
