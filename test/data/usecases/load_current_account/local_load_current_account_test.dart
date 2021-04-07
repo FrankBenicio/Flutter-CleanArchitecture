@@ -1,3 +1,4 @@
+import 'package:ForDev/domain/helpers/helpers.dart';
 import 'package:ForDev/domain/models/models.dart';
 import 'package:ForDev/domain/usecases/load_currrent_account.dart';
 import 'package:faker/faker.dart';
@@ -11,8 +12,12 @@ class LocalLoadCurrentAccount implements LoadCurrentAccount {
   LocalLoadCurrentAccount({@required this.fetchSecureCurrentCacheStorage});
 
   Future<Account> load() async {
+    try{
     final token = await fetchSecureCurrentCacheStorage.fetchSecure('token');
     return Account(token);
+    } catch (error){
+      throw DomainError.unexpected;
+    }
   }
 }
 
@@ -30,9 +35,16 @@ void main() {
 
   String token;
 
-  void mockFetchSecure(){
+  PostExpectation mockFetchSecureCall() =>
+      when(fetchSecureCurrentCacheStorage.fetchSecure(any));
+
+  void mockFetchSecure() {
+    mockFetchSecureCall().thenAnswer((_) async => token);
+  }
+
+  void mockFetchSecureError() {
     when(fetchSecureCurrentCacheStorage.fetchSecure(any))
-        .thenAnswer((_) async => token);
+        .thenThrow(Exception());
   }
 
   setUp(() {
@@ -53,9 +65,24 @@ void main() {
   });
 
   test('Should return an Account', () async {
-
     final account = await sut.load();
 
     expect(account, Account(token));
+  });
+
+  test('Should throw UnexpectedError if FetchSecureCacheStorage throws',
+      () async {
+    final account = await sut.load();
+
+    expect(account, Account(token));
+  });
+
+  test('Should throw UnexpectedError if FetchSecureCacheStorage throws',
+      () async {
+    mockFetchSecureError();
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
