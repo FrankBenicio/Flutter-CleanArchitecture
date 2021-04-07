@@ -5,7 +5,7 @@ import '../../../domain/usecases/usecases.dart';
 import 'package:meta/meta.dart';
 
 class LocalLoadCurrentAccount implements LoadCurrentAccount {
-  final FetchSecureCurrentCacheStorage fetchSecureCurrentCacheStorage;
+  final FetchSecureCacheStorage fetchSecureCurrentCacheStorage;
 
   LocalLoadCurrentAccount({@required this.fetchSecureCurrentCacheStorage});
 

@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 class FetchSecureCurrentCacheStorageSpy extends Mock
-    implements FetchSecureCurrentCacheStorage {}
+    implements FetchSecureCacheStorage {}
 
 void main() {
   FetchSecureCurrentCacheStorageSpy fetchSecureCurrentCacheStorage;
