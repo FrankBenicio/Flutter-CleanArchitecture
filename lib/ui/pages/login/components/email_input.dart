@@ -1,24 +1,20 @@
-import '../login_presenter.dart';
+import 'package:ForDev/utils/i18n/i18n.dart';
 
-import '../../../styles/styles.dart';
+import '../../../ui.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class EmailInput extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<LoginPresenter>(context);
-    return StreamBuilder<String>(
+    return StreamBuilder<UIError>(
         stream: presenter.emailErrorStream,
         builder: (context, snapshot) {
           return TextFormField(
             decoration: InputDecoration(
-                labelText: 'E-mail',
-                errorText: snapshot.data?.isEmpty == true
-                    ? null
-                    : snapshot.data,
+                labelText: R.strings.email,
+                errorText: snapshot.hasData ? snapshot.data.description : null,
                 icon: Icon(
                   Icons.email,
                   color: primaryColorLight,

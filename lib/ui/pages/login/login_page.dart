@@ -1,9 +1,10 @@
+import 'package:ForDev/utils/i18n/i18n.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../ui.dart';
 import 'components/components.dart';
 import 'login_presenter.dart';
-import '../../components/components.dart';
 
 import 'package:flutter/material.dart';
 
@@ -35,9 +36,9 @@ class _LoginPageState extends State<LoginPage> {
             }
           });
 
-          widget.presenter.mainErrorStream.listen((error) {
+          widget.presenter.mainErrorStream.listen((UIError error) {
             if (error != null) {
-              showErrorMessage(context, error);
+              showErrorMessage(context, error.description);
             }
           });
 
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   LoginHeader(),
-                  Headline1(text: "Login"),
+                  Headline1(text: R.strings.login),
                   Padding(
                     padding: EdgeInsets.all(32),
                     child: Provider(
@@ -71,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                             FlatButton.icon(
                               onPressed: () {},
                               icon: Icon(Icons.person),
-                              label: Text('Criar conta'),
+                              label: Text(R.strings.addAccount),
                             )
                           ],
                         ),

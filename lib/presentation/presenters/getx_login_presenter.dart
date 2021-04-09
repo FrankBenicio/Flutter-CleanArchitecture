@@ -1,8 +1,8 @@
+import '../../ui/ui.dart';
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
-import '../../ui/pages/pages.dart';
 import '../protocols/protocols.dart';
 
 class GetXLoginPresenter extends GetxController implements LoginPresenter {
@@ -16,18 +16,18 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
 
   String _password;
 
-  var _emailError = RxString();
-  var _passwordError = RxString();
-  var _mainError = RxString();
+  var _emailError = Rx<UIError>();
+  var _passwordError = Rx<UIError>();
+  var _mainError = Rx<UIError>();
   var _navigateTo = RxString();
   var _isFormValid = false.obs;
   var _isLoading = false.obs;
 
-  Stream<String> get emailErrorStream => _emailError.stream;
+  Stream<UIError> get emailErrorStream => _emailError.stream;
 
-  Stream<String> get passwordErrorStream => _passwordError.stream;
+  Stream<UIError> get passwordErrorStream => _passwordError.stream;
 
-  Stream<String> get mainErrorStream => _mainError.stream;
+  Stream<UIError> get mainErrorStream => _mainError.stream;
 
   Stream<String> get navigateToStream => _navigateTo.stream;
 
@@ -40,16 +40,27 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
       @required this.authentication,
       @required this.saveCurrentAccount});
 
+  UIError _validadeField({String field, String value}) {
+    final error = validation.validate(field: field, value: value);
+    switch (error) {
+      case ValidationError.invalidField:
+        return UIError.invalidField;
+      case ValidationError.requiredField:
+        return UIError.requiredField;
+      default:
+        return null;
+    }
+  }
+
   void validateEmail(String email) {
     _email = email;
-    _emailError.value = validation.validate(field: 'email', value: email);
+    _emailError.value = _validadeField(field: 'email', value: email);
     _validateForm();
   }
 
   void validatePassword(String password) {
     _password = password;
-    _passwordError.value =
-        validation.validate(field: 'password', value: password);
+    _passwordError.value = _validadeField(field: 'password', value: password);
     _validateForm();
   }
 
@@ -69,9 +80,15 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
       await saveCurrentAccount.save(account);
 
       _navigateTo.value = '/surveys';
-
     } on DomainError catch (error) {
-      _mainError.value = error.description;
+      switch (error) {
+        case DomainError.invalidCredentials:
+          _mainError.value = UIError.invalidCredentials;
+          break;
+        default:
+          _mainError.value = UIError.unexpected;
+          break;
+      }
 
       _isLoading.value = false;
     }
