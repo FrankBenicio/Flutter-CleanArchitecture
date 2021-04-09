@@ -1,4 +1,3 @@
-import 'package:ForDev/utils/i18n/i18n.dart';
 import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 

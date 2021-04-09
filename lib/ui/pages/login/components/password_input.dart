@@ -1,4 +1,3 @@
-import 'package:ForDev/utils/i18n/i18n.dart';
 
 import '../../../ui.dart';
 import 'package:flutter/material.dart';
