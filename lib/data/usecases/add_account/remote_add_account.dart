@@ -6,7 +6,7 @@ import '../../../domain/models/models.dart';
 import '../../http/http.dart';
 import 'package:meta/meta.dart';
 
-class RemoteAddAccount {
+class RemoteAddAccount implements AddAccount{
   final HttpClient httpClient;
   final String url;
 
@@ -16,7 +16,9 @@ class RemoteAddAccount {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
 
     try {
-    await httpClient.request(url: url, method: 'post', body: body);
+      final httpResponse = await httpClient.request(url: url, method: 'post', body: body);
+
+      return RemoteAccountModel.fromJson(httpResponse).toModel();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
           ? DomainError.emailInUse

@@ -14,17 +14,22 @@ void main() {
   String url;
   AddAccountParams params;
 
+  Map mockValidData() =>
+      {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
 
-  PostExpectation _mockRequest(){
-    return  when(httpClient.request(
+  PostExpectation _mockRequest() {
+    return when(httpClient.request(
         url: anyNamed("url"),
         method: anyNamed("method"),
         body: anyNamed("body")));
   }
 
-  void mockHttpError(HttpError error){
-    _mockRequest()
-        .thenThrow(error);
+  void mockHttpError(HttpError error) {
+    _mockRequest().thenThrow(error);
+  }
+
+  void mockHttpData(Map data) {
+    _mockRequest().thenAnswer((_) async => data);
   }
 
   setUp(() {
@@ -37,6 +42,8 @@ void main() {
         password: password,
         passwordConfirmation: password,
         name: faker.person.name());
+
+    mockHttpData(mockValidData());
   });
 
   test("Should call HttpClient with correct values", () async {
@@ -82,4 +89,12 @@ void main() {
     expect(future, throwsA(DomainError.emailInUse));
   });
 
+  test("Should return an Account if HttpClient returns 200", () async {
+    final validData = mockValidData();
+    mockHttpData(validData);
+
+    final account = await sut.add(params);
+
+    expect(account.token, validData['accessToken']);
+  });
 }
