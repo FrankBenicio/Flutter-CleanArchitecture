@@ -27,7 +27,6 @@ class RemoteAuthentication implements Authentication {
           : DomainError.unexpected;
     }
   }
-
 }
 
 class RemoteAuthenticationParams {
