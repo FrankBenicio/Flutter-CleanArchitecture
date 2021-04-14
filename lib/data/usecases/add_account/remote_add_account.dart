@@ -14,7 +14,14 @@ class RemoteAddAccount {
 
   Future<Account> add(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
+
+    try {
     await httpClient.request(url: url, method: 'post', body: body);
+    } on HttpError catch (error) {
+      throw error == HttpError.unauthorized
+          ? DomainError.invalidCredentials
+          : DomainError.unexpected;
+    }
   }
 }
 
