@@ -22,4 +22,8 @@ class EnUs implements Translations{
 
   String get loading => 'Loading...';
 
+  String get name => 'Name';
+
+  String get passwordConfirmation => 'Password confirmation';
+
 }
