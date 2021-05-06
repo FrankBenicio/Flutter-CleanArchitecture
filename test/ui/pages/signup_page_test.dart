@@ -170,4 +170,23 @@ void main() {
             of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
         expect(emailTextChield, findsOneWidget);
       });
+
+  testWidgets('Should present name error',
+          (WidgetTester tester) async {
+        await loadPage(tester);
+
+        nameErrorController.add(UIError.invalidField);
+        await tester.pump();
+        expect(find.text(UIError.invalidField.description), findsOneWidget);
+
+
+        nameErrorController.add(UIError.requiredField);
+        await tester.pump();
+        expect(find.text(UIError.requiredField.description), findsOneWidget);
+
+        nameErrorController.add(null);
+        await tester.pump();
+        expect(find.descendant(
+            of: find.bySemanticsLabel('Nome'), matching: find.byType(Text)), findsOneWidget);
+      });
 }
