@@ -19,6 +19,7 @@ void main() {
   StreamController<UIError> mainErrorController;
   StreamController<bool> isFormValidController;
   StreamController<bool> isLoadingController;
+  StreamController<String> navigateToController;
 
   void initStreams() {
     emailErrorController = StreamController<UIError>();
@@ -28,6 +29,7 @@ void main() {
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
     mainErrorController = StreamController<UIError>();
+    navigateToController = StreamController<String>();
   }
 
   void mockStreams() {
@@ -51,6 +53,9 @@ void main() {
 
     when(presenter.mainErrorStream)
         .thenAnswer((_) => mainErrorController.stream);
+
+    when(presenter. navigateToStream)
+        .thenAnswer((_) => navigateToController.stream);
   }
 
   void closeStreams() {
@@ -65,6 +70,10 @@ void main() {
     isFormValidController.close();
 
     isLoadingController.close();
+
+    mainErrorController.close();
+
+    navigateToController.close();
   }
 
   Future loadPage(WidgetTester tester) async {
@@ -322,11 +331,28 @@ void main() {
     expect(find.text(UIError.unexpected.description), findsOneWidget);
   });
 
-  testWidgets('Should close streams on dispose', (WidgetTester tester) async {
+  testWidgets('Should change page', (WidgetTester tester) async {
     await loadPage(tester);
 
-    addTearDown(() {
-      verify(presenter.dispose()).called(1);
-    });
+    navigateToController.add('/any_router');
+    await tester.pumpAndSettle();
+
+    expect(Get.currentRoute, '/any_router');
+
+    expect(find.text('fake page'), findsOneWidget);
+  });
+
+  testWidgets('Should not change page', (WidgetTester tester) async {
+    //
+    await loadPage(tester);
+
+    navigateToController.add('');
+    await tester.pump();
+    expect(Get.currentRoute, '/signup');
+
+
+    navigateToController.add(null);
+    await tester.pump();
+    expect(Get.currentRoute, '/signup');
   });
 }

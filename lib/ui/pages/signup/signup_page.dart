@@ -1,9 +1,10 @@
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 import '../../ui.dart';
 import 'components/components.dart';
 
-import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
 
@@ -38,6 +39,12 @@ class _SignUpPageState extends State<SignUpPage> {
           widget.presenter.mainErrorStream.listen((UIError error) {
             if (error != null) {
               showErrorMessage(context, error.description);
+            }
+          });
+
+          widget.presenter.navigateToStream.listen((page) {
+            if (page?.isNotEmpty == true) {
+              Get.offAllNamed(page);
             }
           });
 
