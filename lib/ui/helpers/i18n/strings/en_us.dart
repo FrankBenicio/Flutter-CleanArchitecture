@@ -26,4 +26,6 @@ class EnUs implements Translations{
 
   String get passwordConfirmation => 'Password confirmation';
 
+  String get emailInUse => 'E-mail in use';
+
 }

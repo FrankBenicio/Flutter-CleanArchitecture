@@ -13,5 +13,6 @@ abstract class Translations{
   String get invalidField;
   String get invalidCredentials;
   String get unexpected;
+  String get emailInUse;
 
 }

@@ -10,6 +10,8 @@ abstract class SignUpPresenter{
 
   Stream<UIError> get passwordConfirmationErrorStream;
 
+  Stream<UIError> get mainErrorStream;
+
   Stream<bool> get isFormValidStream;
 
   Stream<bool> get isLoadingStream;

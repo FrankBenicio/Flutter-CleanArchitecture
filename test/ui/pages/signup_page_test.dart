@@ -11,12 +11,12 @@ import 'package:mockito/mockito.dart';
 class SignUpPresenterSpy extends Mock implements SignUpPresenter {}
 
 void main() {
-
   SignUpPresenter presenter;
   StreamController<UIError> nameErrorController;
   StreamController<UIError> emailErrorController;
   StreamController<UIError> passwordErrorController;
   StreamController<UIError> passwordConfirmationErrorController;
+  StreamController<UIError> mainErrorController;
   StreamController<bool> isFormValidController;
   StreamController<bool> isLoadingController;
 
@@ -27,6 +27,7 @@ void main() {
     nameErrorController = StreamController<UIError>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
+    mainErrorController = StreamController<UIError>();
   }
 
   void mockStreams() {
@@ -48,6 +49,8 @@ void main() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
 
+    when(presenter.mainErrorStream)
+        .thenAnswer((_) => mainErrorController.stream);
   }
 
   void closeStreams() {
@@ -62,11 +65,9 @@ void main() {
     isFormValidController.close();
 
     isLoadingController.close();
-
   }
 
   Future loadPage(WidgetTester tester) async {
-
     presenter = SignUpPresenterSpy();
 
     initStreams();
@@ -88,8 +89,7 @@ void main() {
     await tester.pumpWidget(signupPage);
   }
 
-
-  tearDown((){
+  tearDown(() {
     closeStreams();
   });
 
@@ -104,7 +104,7 @@ void main() {
       nameTextChield,
       findsOneWidget,
       reason:
-      'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the hint text',
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the hint text',
     );
 
     final emailTextChield = find.descendant(
@@ -128,13 +128,14 @@ void main() {
     );
 
     final passwordConfirmationTextChield = find.descendant(
-        of: find.bySemanticsLabel('Confirmar senha'), matching: find.byType(Text));
+        of: find.bySemanticsLabel('Confirmar senha'),
+        matching: find.byType(Text));
 
     expect(
       passwordConfirmationTextChield,
       findsOneWidget,
       reason:
-      'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the hint text',
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the hint text',
     );
 
     final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
@@ -145,140 +146,140 @@ void main() {
   });
 
   testWidgets('Should call validate with correct values',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        final name = faker.person.name();
-        await tester.enterText(find.bySemanticsLabel('Nome'), name);
-        verify(presenter.validateName(name));
+    final name = faker.person.name();
+    await tester.enterText(find.bySemanticsLabel('Nome'), name);
+    verify(presenter.validateName(name));
 
-        final email = faker.internet.email();
-        await tester.enterText(find.bySemanticsLabel('E-mail'), email);
-        verify(presenter.validateEmail(email));
+    final email = faker.internet.email();
+    await tester.enterText(find.bySemanticsLabel('E-mail'), email);
+    verify(presenter.validateEmail(email));
 
-        final password = faker.internet.password();
-        await tester.enterText(find.bySemanticsLabel('Senha'), password);
-        verify(presenter.validatePassword(password));
+    final password = faker.internet.password();
+    await tester.enterText(find.bySemanticsLabel('Senha'), password);
+    verify(presenter.validatePassword(password));
 
-        final passwordConfirmation = password;
-        await tester.enterText(find.bySemanticsLabel('Confirmar senha'), passwordConfirmation);
-        verify(presenter.validatePasswordConfirmation(passwordConfirmation));
-      });
+    final passwordConfirmation = password;
+    await tester.enterText(
+        find.bySemanticsLabel('Confirmar senha'), passwordConfirmation);
+    verify(presenter.validatePasswordConfirmation(passwordConfirmation));
+  });
 
-  testWidgets('Should present email error',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+  testWidgets('Should present email error', (WidgetTester tester) async {
+    await loadPage(tester);
 
-        emailErrorController.add(UIError.invalidField);
-        await tester.pump();
-        expect(find.text(UIError.invalidField.description), findsOneWidget);
+    emailErrorController.add(UIError.invalidField);
+    await tester.pump();
+    expect(find.text(UIError.invalidField.description), findsOneWidget);
 
+    emailErrorController.add(UIError.requiredField);
+    await tester.pump();
+    expect(find.text(UIError.requiredField.description), findsOneWidget);
 
-        emailErrorController.add(UIError.requiredField);
-        await tester.pump();
-        expect(find.text(UIError.requiredField.description), findsOneWidget);
+    emailErrorController.add(null);
+    await tester.pump();
+    final emailTextChield = find.descendant(
+        of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
+    expect(emailTextChield, findsOneWidget);
+  });
 
-        emailErrorController.add(null);
-        await tester.pump();
-        final emailTextChield = find.descendant(
-            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text));
-        expect(emailTextChield, findsOneWidget);
-      });
+  testWidgets('Should present name error', (WidgetTester tester) async {
+    await loadPage(tester);
 
-  testWidgets('Should present name error',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+    nameErrorController.add(UIError.invalidField);
+    await tester.pump();
+    expect(find.text(UIError.invalidField.description), findsOneWidget);
 
-        nameErrorController.add(UIError.invalidField);
-        await tester.pump();
-        expect(find.text(UIError.invalidField.description), findsOneWidget);
+    nameErrorController.add(UIError.requiredField);
+    await tester.pump();
+    expect(find.text(UIError.requiredField.description), findsOneWidget);
 
+    nameErrorController.add(null);
+    await tester.pump();
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel('Nome'), matching: find.byType(Text)),
+        findsOneWidget);
+  });
 
-        nameErrorController.add(UIError.requiredField);
-        await tester.pump();
-        expect(find.text(UIError.requiredField.description), findsOneWidget);
+  testWidgets('Should present password error', (WidgetTester tester) async {
+    await loadPage(tester);
 
-        nameErrorController.add(null);
-        await tester.pump();
-        expect(find.descendant(
-            of: find.bySemanticsLabel('Nome'), matching: find.byType(Text)), findsOneWidget);
-      });
+    passwordErrorController.add(UIError.invalidField);
+    await tester.pump();
+    expect(find.text(UIError.invalidField.description), findsOneWidget);
 
-  testWidgets('Should present password error',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+    passwordErrorController.add(UIError.requiredField);
+    await tester.pump();
+    expect(find.text(UIError.requiredField.description), findsOneWidget);
 
-        passwordErrorController.add(UIError.invalidField);
-        await tester.pump();
-        expect(find.text(UIError.invalidField.description), findsOneWidget);
-
-
-        passwordErrorController.add(UIError.requiredField);
-        await tester.pump();
-        expect(find.text(UIError.requiredField.description), findsOneWidget);
-
-        passwordErrorController.add(null);
-        await tester.pump();
-        expect(find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)), findsOneWidget);
-      });
+    passwordErrorController.add(null);
+    await tester.pump();
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+        findsOneWidget);
+  });
 
   testWidgets('Should present passwordConfirmation error',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        passwordConfirmationErrorController.add(UIError.invalidField);
-        await tester.pump();
-        expect(find.text(UIError.invalidField.description), findsOneWidget);
+    passwordConfirmationErrorController.add(UIError.invalidField);
+    await tester.pump();
+    expect(find.text(UIError.invalidField.description), findsOneWidget);
 
+    passwordConfirmationErrorController.add(UIError.requiredField);
+    await tester.pump();
+    expect(find.text(UIError.requiredField.description), findsOneWidget);
 
-        passwordConfirmationErrorController.add(UIError.requiredField);
-        await tester.pump();
-        expect(find.text(UIError.requiredField.description), findsOneWidget);
-
-        passwordConfirmationErrorController.add(null);
-        await tester.pump();
-        expect(find.descendant(
-            of: find.bySemanticsLabel('Confirmar senha'), matching: find.byType(Text)), findsOneWidget);
-      });
+    passwordConfirmationErrorController.add(null);
+    await tester.pump();
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel('Confirmar senha'),
+            matching: find.byType(Text)),
+        findsOneWidget);
+  });
 
   testWidgets('Should enable button if form is valid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        isFormValidController.add(true);
-        await tester.pump();
-        final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
-        expect(button.onPressed, isNotNull);
-      });
+    isFormValidController.add(true);
+    await tester.pump();
+    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    expect(button.onPressed, isNotNull);
+  });
 
   testWidgets('Should disable button if form is invalid',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
-        isFormValidController.add(false);
+    isFormValidController.add(false);
 
-        await tester.pump();
+    await tester.pump();
 
-        final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
+    final button = tester.widget<RaisedButton>(find.byType(RaisedButton));
 
-        expect(button.onPressed, isNull);
-      });
+    expect(button.onPressed, isNull);
+  });
 
-  testWidgets('Should call signUp on form submit',
-          (WidgetTester tester) async {
-        await loadPage(tester);
+  testWidgets('Should call signUp on form submit', (WidgetTester tester) async {
+    await loadPage(tester);
 
-        isFormValidController.add(true);
-        await tester.pump();
+    isFormValidController.add(true);
+    await tester.pump();
 
-        final button = find.byType(RaisedButton);
-        await tester.ensureVisible(button);
-        await tester.tap(button);
-        await tester.pump();
+    final button = find.byType(RaisedButton);
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pump();
 
-        verify(presenter.signUp()).called(1);
-      });
+    verify(presenter.signUp()).called(1);
+  });
 
   testWidgets('Should present loading', (WidgetTester tester) async {
     await loadPage(tester);
@@ -301,4 +302,31 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 
+  testWidgets('Should present error message if signUp fails',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add(UIError.emailInUse);
+    await tester.pump();
+
+    expect(find.text(UIError.emailInUse.description), findsOneWidget);
+  });
+
+  testWidgets('Should present error message if signUp throws',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add(UIError.unexpected);
+    await tester.pump();
+
+    expect(find.text(UIError.unexpected.description), findsOneWidget);
+  });
+
+  testWidgets('Should close streams on dispose', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    addTearDown(() {
+      verify(presenter.dispose()).called(1);
+    });
+  });
 }

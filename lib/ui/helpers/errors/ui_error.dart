@@ -1,6 +1,12 @@
 import '../i18n/i18n.dart';
 
-enum UIError { requiredField, invalidField, unexpected, invalidCredentials }
+enum UIError {
+  requiredField,
+  invalidField,
+  unexpected,
+  invalidCredentials,
+  emailInUse,
+}
 
 extension UIErrorExtension on UIError {
   String get description {
@@ -11,6 +17,8 @@ extension UIErrorExtension on UIError {
         return R.strings.invalidField;
       case UIError.invalidCredentials:
         return R.strings.invalidCredentials;
+      case UIError.emailInUse:
+        return R.strings.emailInUse;
       default:
         return R.strings.unexpected;
     }

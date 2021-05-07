@@ -35,6 +35,12 @@ class _SignUpPageState extends State<SignUpPage> {
             }
           });
 
+          widget.presenter.mainErrorStream.listen((UIError error) {
+            if (error != null) {
+              showErrorMessage(context, error.description);
+            }
+          });
+
           return GestureDetector(
             onTap: _hideKeyboard,
             child: SingleChildScrollView(

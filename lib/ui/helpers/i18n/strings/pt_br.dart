@@ -26,4 +26,6 @@ class PtBr implements Translations{
 
   String get passwordConfirmation => 'Confirmar senha';
 
+  String get emailInUse => 'O email já está em uso.';
+
 }
