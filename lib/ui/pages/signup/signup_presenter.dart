@@ -12,6 +12,8 @@ abstract class SignUpPresenter{
 
   Stream<bool> get isFormValidStream;
 
+  Stream<bool> get isLoadingStream;
+
   void validateName(String name);
 
   void validateEmail(String email);
