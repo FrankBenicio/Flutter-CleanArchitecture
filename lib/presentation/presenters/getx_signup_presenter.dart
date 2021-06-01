@@ -1,4 +1,5 @@
 import 'package:ForDev/domain/usecases/add_account.dart';
+import 'package:ForDev/domain/usecases/save_currrent_account.dart';
 
 import '../../ui/ui.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../protocols/protocols.dart';
 class GetXSignUpPresenter extends GetxController {
   final Validation validation;
   final AddAccount addAccount;
+  final SaveCurrentAccount saveCurrentAccount;
 
   final _emailError = Rx<UIError>();
   final _nameError = Rx<UIError>();
@@ -37,7 +39,7 @@ class GetXSignUpPresenter extends GetxController {
 
   Stream<bool> get isLoadingStream => _isLoading.stream;
 
-  GetXSignUpPresenter({@required this.validation, @required this.addAccount});
+  GetXSignUpPresenter({@required this.validation, @required this.addAccount, @required this.saveCurrentAccount});
 
   void validateEmail(String email) {
     _email = email;
@@ -88,13 +90,15 @@ class GetXSignUpPresenter extends GetxController {
   }
 
   Future signUp() async {
-    await addAccount
+   final account = await addAccount
         .add(AddAccountParams(
         name: _name,
         email: _email,
         password: _password,
         passwordConfirmation: _passwordConfirmation
     ));
+
+    await saveCurrentAccount.save(account);
   }
 
   void dispose() {}
