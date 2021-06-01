@@ -30,4 +30,6 @@ abstract class SignUpPresenter{
 
   void dispose();
 
+  void goToLogin() {}
+
 }

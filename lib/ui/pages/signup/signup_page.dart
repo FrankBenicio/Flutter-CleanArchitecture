@@ -75,7 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                             SignUpButton(),
                             FlatButton.icon(
-                              onPressed: () {},
+                              onPressed: widget.presenter.goToLogin,
                               icon: Icon(Icons.exit_to_app),
                               label: Text(R.strings.login),
                             )

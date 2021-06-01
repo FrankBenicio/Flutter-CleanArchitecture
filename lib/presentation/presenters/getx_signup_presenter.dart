@@ -6,7 +6,7 @@ import '../protocols/protocols.dart';
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
-class GetXSignUpPresenter extends GetxController {
+class GetXSignUpPresenter extends GetxController implements SignUpPresenter{
   final Validation validation;
   final AddAccount addAccount;
   final SaveCurrentAccount saveCurrentAccount;
@@ -123,4 +123,8 @@ class GetXSignUpPresenter extends GetxController {
   }
 
   void dispose() {}
+
+  void goToLogin() {
+    _navigateTo.value = '/login';
+  }
 }
