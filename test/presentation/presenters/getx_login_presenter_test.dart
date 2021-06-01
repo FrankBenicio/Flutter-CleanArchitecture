@@ -47,8 +47,8 @@ void main() {
     mockAuthenticationCall().thenThrow(error);
   }
 
-
-  PostExpectation mockSaveCurrentAccountCall() => when(saveCurrentAccount.save(any));
+  PostExpectation mockSaveCurrentAccountCall() =>
+      when(saveCurrentAccount.save(any));
 
   void mockSaveCurrentAccountError() {
     mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
@@ -113,7 +113,6 @@ void main() {
     sut.validateEmail(email);
     sut.validateEmail(email);
   });
-
 
   test('Should emit null if validation succeeds', () {
     sut.emailErrorStream.listen(expectAsync1((error) => expect(error, null)));
@@ -222,8 +221,8 @@ void main() {
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
-    sut.mainErrorStream.listen(expectAsync1((error) =>
-        expect(error, UIError.unexpected)));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
 
     await sut.auth();
   });
@@ -237,8 +236,8 @@ void main() {
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
-    sut.mainErrorStream.listen(expectAsync1((error) =>
-        expect(error, UIError.unexpected)));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, UIError.unexpected)));
 
     await sut.auth();
   });
@@ -248,9 +247,16 @@ void main() {
 
     sut.validatePassword(password);
 
-    sut.navigateToStream.listen(expectAsync1((page) =>
-        expect(page, '/surveys')));
+    sut.navigateToStream
+        .listen(expectAsync1((page) => expect(page, '/surveys')));
 
     await sut.auth();
+  });
+
+  test('Should go to SignUp page on link click', () async {
+    sut.navigateToStream
+        .listen(expectAsync1((page) => expect(page, '/signup')));
+
+    sut.goToSignUp();
   });
 }

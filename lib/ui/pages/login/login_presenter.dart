@@ -20,6 +20,9 @@ abstract class LoginPresenter{
 
   Future auth();
 
+  void goToSignUp() {}
+
   void dispose();
+
 
 }

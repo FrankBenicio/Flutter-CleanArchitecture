@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             LoginButton(),
                             FlatButton.icon(
-                              onPressed: () {},
+                              onPressed: widget.presenter.goToSignUp,
                               icon: Icon(Icons.person),
                               label: Text(R.strings.addAccount),
                             )
