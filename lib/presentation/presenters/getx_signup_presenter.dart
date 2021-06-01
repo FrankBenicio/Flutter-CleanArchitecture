@@ -1,10 +1,10 @@
-import 'package:ForDev/domain/usecases/add_account.dart';
-import 'package:ForDev/domain/usecases/save_currrent_account.dart';
-
+import '../../domain/helpers/helpers.dart';
+import '../../domain/usecases/usecases.dart';
 import '../../ui/ui.dart';
+import '../protocols/protocols.dart';
+
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
-import '../protocols/protocols.dart';
 
 class GetXSignUpPresenter extends GetxController {
   final Validation validation;
@@ -90,6 +90,9 @@ class GetXSignUpPresenter extends GetxController {
   }
 
   Future signUp() async {
+    try {
+      _isLoading.value = true;
+
    final account = await addAccount
         .add(AddAccountParams(
         name: _name,
@@ -99,6 +102,18 @@ class GetXSignUpPresenter extends GetxController {
     ));
 
     await saveCurrentAccount.save(account);
+    } on DomainError catch (error) {
+      switch (error) {
+        case DomainError.invalidCredentials:
+          _mainError.value = UIError.invalidCredentials;
+          break;
+        default:
+          _mainError.value = UIError.unexpected;
+          break;
+      }
+
+      _isLoading.value = false;
+    }
   }
 
   void dispose() {}
