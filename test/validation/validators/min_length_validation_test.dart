@@ -1,19 +1,9 @@
 import 'package:ForDev/presentation/protocols/validation.dart';
-import 'package:ForDev/validation/protocols/protocols.dart';
+import 'package:ForDev/validation/validators/validators.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
-import 'package:meta/meta.dart';
 
-class MingLengthValidation implements FieldValidation {
-  final String field;
-  final int size;
 
-  MingLengthValidation({@required this.field, @required this.size});
-
-  ValidationError validate(String value) {
-    return value != null && value.length >= size ? null : ValidationError.invalidField;
-  }
-}
 
 void main() {
   MingLengthValidation sut;
