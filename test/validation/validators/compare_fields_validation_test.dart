@@ -10,10 +10,18 @@ void main() {
   setUp((){
      sut = CompareFieldsValidation(field: 'any_field', valueToCompare: 'any_value');
   });
-  test('Should retorn error if value is not equal', () {
+
+  test('Should retorn error if values are not equal', () {
     
     final error = sut.validate('wrong_value');
 
     expect(error, ValidationError.invalidField);
+  });
+
+  test('Should retorn null if values are equal', () {
+
+    final error = sut.validate('any_value');
+
+    expect(error, null);
   });
 }
