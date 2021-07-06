@@ -11,7 +11,7 @@ class ValidationComposite implements Validation {
     ValidationError error;
 
     for (final validation in validations.where((v) => v.field == field)) {
-      error = validation.validate(input);
+      error = validation.validate(value);
       if (error != null) {
         return error;
       }
