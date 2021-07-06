@@ -9,8 +9,8 @@ void main() {
     sut = EmailValidation('any_field');
   });
 
-  test('Should return null if email is empty', () {
-    final error = sut.validate({'any_field': ''});
+  test('Should return null on invalide case', () {
+    final error = sut.validate({});
 
     expect(error, null);
   });
