@@ -78,6 +78,7 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
 
   Future auth() async {
     try {
+      _mainError.value = null;
       _isLoading.value = true;
       final account = await authentication
           .auth(AuthenticationParams(email: _email, secret: _password));
