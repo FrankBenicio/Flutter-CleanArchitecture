@@ -5,7 +5,6 @@ import 'package:test/test.dart';
 import 'package:meta/meta.dart';
 
 class RemoteLoadSurveys {
-
   final String url;
   final HttpClient httpClient;
 
@@ -19,13 +18,19 @@ class RemoteLoadSurveys {
 class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
+  HttpClientSpy httpClient;
+  RemoteLoadSurveys sut;
+  String url;
+
+  setUp(() {
+    url = faker.internet.httpUrl();
+
+    httpClient = HttpClientSpy();
+
+    sut = RemoteLoadSurveys(url: url, httpClient: httpClient);
+  });
+
   test('Should call HttpClient with correct values', () async {
-    final url = faker.internet.httpUrl();
-
-    final httpClient = HttpClientSpy();
-
-    final sut = RemoteLoadSurveys(url: url, httpClient: httpClient);
-
     await sut.load();
 
     verify(httpClient.request(url: url, method: 'get'));
