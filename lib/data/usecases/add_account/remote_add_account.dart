@@ -1,6 +1,6 @@
 import '../../../domain/usecases/usecases.dart';
 import '../../models/models.dart';
-import '../../../domain/helpers/domain_error.dart';
+import '../../../domain/helpers/helpers.dart';
 import '../../../domain/models/models.dart';
 
 import '../../http/http.dart';
