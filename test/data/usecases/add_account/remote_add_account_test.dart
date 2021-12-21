@@ -6,12 +6,12 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class HttpClientSpy extends Mock implements HttpClient<Map> {}
 
 void main() {
   RemoteAddAccount sut;
   HttpClientSpy httpClient;
-  String url;
+  Uri url;
   AddAccountParams params;
 
   Map mockValidData() =>
@@ -34,7 +34,7 @@ void main() {
 
   setUp(() {
     httpClient = HttpClientSpy();
-    url = faker.internet.httpUrl();
+    url = Uri.parse(faker.internet.httpsUrl());
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
     String password = faker.internet.password();
     params = AddAccountParams(

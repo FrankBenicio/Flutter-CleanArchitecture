@@ -7,8 +7,8 @@ import '../../http/http.dart';
 import 'package:meta/meta.dart';
 
 class RemoteAddAccount implements AddAccount{
-  final HttpClient httpClient;
-  final String url;
+  final HttpClient<Map> httpClient;
+  final Uri url;
 
   RemoteAddAccount({@required this.httpClient, @required this.url});
 

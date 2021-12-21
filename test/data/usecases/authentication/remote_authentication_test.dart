@@ -6,12 +6,12 @@ import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class HttpClientSpy extends Mock implements HttpClient<Map> {}
 
 void main() {
   RemoteAuthentication sut;
   HttpClientSpy httpClient;
-  String url;
+  Uri url;
   AuthenticationParams params;
 
   Map mockValidData() => {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
@@ -36,7 +36,7 @@ void main() {
 
   setUp(() {
     httpClient = HttpClientSpy();
-    url = faker.internet.httpUrl();
+    url = Uri.parse(faker.internet.httpUrl());
     sut = RemoteAuthentication(httpClient: httpClient, url: url);
     params = AuthenticationParams(
         email: faker.internet.email(), secret: faker.internet.password());
