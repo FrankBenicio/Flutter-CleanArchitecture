@@ -15,6 +15,9 @@ class RemoteSurveyModel {
       @required this.didAnswer});
 
   factory RemoteSurveyModel.fromJson(Map json) {
+    if (!json.keys.toSet().containsAll(['id', 'question', 'didAnswer', 'date']))
+      throw HttpError.invalideData;
+
     return RemoteSurveyModel(
       id: json['id'],
       question: json['question'],
