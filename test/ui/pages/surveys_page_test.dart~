@@ -116,6 +116,6 @@ void main() {
 
         await tester.tap(find.text(R.strings.recharge));
 
-        verify(presenter.loadData()).called(2);
+        verify(presenter.loadData()).called(1);
       });
 }
