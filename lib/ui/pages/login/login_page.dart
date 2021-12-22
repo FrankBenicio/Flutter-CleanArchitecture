@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Builder(
         builder: (context) {
           widget.presenter.isLoadingStream.listen((isLoading) {
-            if (isLoading) {
+            if (isLoading == true) {
               showLoading(context);
             } else {
               hideLoading(context);
