@@ -44,6 +44,13 @@ void main() {
     await tester.pumpWidget(surveysPage);
   }
 
+  List<SurveyViewModel> makeSurveys() => [
+    SurveyViewModel(id: '1', question: 'question 1', date: 'date', didAnswer: true),
+    SurveyViewModel(id: '2', question: 'question 2', date: 'date', didAnswer: false)
+
+  ];
+
+
   tearDown(() {
     closeStreams();
   });
@@ -83,6 +90,19 @@ void main() {
     expect(find.text(R.strings.unexpected), findsOneWidget);
     expect(find.text(R.strings.recharge), findsOneWidget);
     expect(find.text('Question 1'), findsNothing);
+
+
+  });
+
+  testWidgets('Should present list if loadSurveysStream succeeds', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadSurveysController.add(makeSurveys());
+    await tester.pump();
+    expect(find.text(R.strings.unexpected), findsNothing);
+    expect(find.text(R.strings.recharge), findsNothing);
+    expect(find.text('question 1'), findsWidgets);
+    expect(find.text('question 2'), findsWidgets);
 
 
   });
