@@ -6,8 +6,15 @@ import '../../ui.dart';
 import 'components/components.dart';
 
 class SurveysPage extends StatelessWidget {
+  final  SurveysPresenter presenter;
+
+ SurveysPage(this.presenter);
+
   @override
   Widget build(BuildContext context) {
+
+    presenter.loadData();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(R.strings.surveys),
