@@ -6,6 +6,8 @@ ThemeData makeAppTheme(){
     primaryColor: primaryColor,
     primaryColorDark: primaryColorDark,
     primaryColorLight: primaryColorLight,
+    secondaryHeaderColor: secondaryColorDark,
+
     accentColor: primaryColor,
     backgroundColor: whiteColor,
     textTheme: TextTheme(

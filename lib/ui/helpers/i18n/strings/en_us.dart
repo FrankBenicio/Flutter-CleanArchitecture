@@ -28,4 +28,6 @@ class EnUs implements Translations{
 
   String get emailInUse => 'E-mail in use';
 
+  String get surveys => 'Surveys';
+
 }

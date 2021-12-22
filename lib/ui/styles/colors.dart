@@ -9,3 +9,5 @@ const primaryColorLight = Color.fromRGBO(188, 71,123,1);
 const whiteColor = Colors.white;
 
 const blackColor = Colors.black;
+
+ const secondaryColorDark = Color.fromRGBO(0, 37,26,1);
