@@ -15,5 +15,6 @@ abstract class Translations{
   String get unexpected;
   String get emailInUse;
   String get surveys;
+  String get recharge;
 
 }

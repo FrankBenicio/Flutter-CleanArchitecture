@@ -30,4 +30,6 @@ class PtBr implements Translations{
 
   String get surveys => 'Enquetes';
 
+  String get recharge => 'Recarregar';
+
 }

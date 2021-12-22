@@ -30,4 +30,6 @@ class EnUs implements Translations{
 
   String get surveys => 'Surveys';
 
+  String get recharge => 'Recharge';
+
 }
