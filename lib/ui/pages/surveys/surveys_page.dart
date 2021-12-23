@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -31,17 +33,26 @@ class SurveysPage extends StatelessWidget {
               stream: presenter.loadSurveysStream,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Column(
-                    children: [
-                      Text(snapshot.error),
-                      ElevatedButton(
-                        onPressed: presenter.loadData,
-                        child: Text(R.strings.recharge),
-                      )
-                    ],
+                  return Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          snapshot.error,
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10,),
+                        ElevatedButton(
+                          onPressed: presenter.loadData,
+                          child: Text(R.strings.recharge),
+                        )
+                      ],
+                    ),
                   );
                 }
-                if(snapshot.hasData){
+                if (snapshot.hasData) {
                   return Padding(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: CarouselSlider(
@@ -49,11 +60,15 @@ class SurveysPage extends StatelessWidget {
                         enlargeCenterPage: true,
                         aspectRatio: 1,
                       ),
-                      items: snapshot.data.map((viewModel) => SurveyItem(viewModel)).toList(),
+                      items: snapshot.data
+                          .map((viewModel) => SurveyItem(viewModel))
+                          .toList(),
                     ),
                   );
                 }
-                return SizedBox(height: 0,);
+                return SizedBox(
+                  height: 0,
+                );
               });
         },
       ),
