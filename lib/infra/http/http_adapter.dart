@@ -4,12 +4,12 @@ import '../../data/http/http.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-class HttpAdapter implements HttpClient<Map> {
+class HttpAdapter implements HttpClient {
   final Client client;
 
   HttpAdapter(this.client);
 
-  Future<Map> request(
+  Future<dynamic> request(
       {@required Uri url, @required String method, Map body}) async {
     final headers = {
       'content-type': 'application/json',
@@ -29,7 +29,7 @@ class HttpAdapter implements HttpClient<Map> {
     return _handleResponse(response);
   }
 
-  Map _handleResponse(Response response) {
+  dynamic _handleResponse(Response response) {
     if (response.statusCode == 200)
       return response.body.isEmpty ? null : jsonDecode(response.body);
     else if (response.statusCode == 204)
