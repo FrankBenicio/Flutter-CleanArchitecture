@@ -17,11 +17,15 @@ GetXSurveysPresenter({@required this.loadSurveys});
 class LoadSurveysSpy extends Mock implements LoadSurveys{}
 
 void main(){
+  GetXSurveysPresenter sut;
+  LoadSurveysSpy loadSurveys;
+
+  setUp((){
+    loadSurveys = LoadSurveysSpy();
+
+    sut = GetXSurveysPresenter(loadSurveys: loadSurveys);
+  });
   test('Should call LoadSurveys on loadData', () async{
-
-    final loadSurveys = LoadSurveysSpy();
-
-    final sut = GetXSurveysPresenter(loadSurveys: loadSurveys);
 
     await sut.loadData();
 
