@@ -18,13 +18,15 @@ class AuthorizeHttpClientDecorator implements HttpClient {
     Map body,
     Map headers,
   }) async {
-    try{
-    final token = await fetchSecureCacheStorage.fetchSecure('token');
-    final authorizedHeaders = headers ?? {}
-      ..addAll({'x-access-token': token});
-    return await decoratee.request(
-        url: url, method: method, body: body, headers: authorizedHeaders);
-    } catch (error){
+    try {
+      final token = await fetchSecureCacheStorage.fetchSecure('token');
+      final authorizedHeaders = headers ?? {}
+        ..addAll({'x-access-token': token});
+      return await decoratee.request(
+          url: url, method: method, body: body, headers: authorizedHeaders);
+    } on HttpError {
+      rethrow;
+    } catch (error) {
       throw HttpError.forbidden;
     }
   }
@@ -48,6 +50,12 @@ void main() {
   PostExpectation mockTokenCall() =>
       when(fetchSecureCacheStorage.fetchSecure(any));
 
+  PostExpectation mockHttpResponseCall() => when(httpClient.request(
+      url: anyNamed('url'),
+      method: anyNamed('method'),
+      body: anyNamed('body'),
+      headers: anyNamed('headers')));
+
   void mockToken() {
     token = faker.guid.guid();
     mockTokenCall().thenAnswer((_) async => token);
@@ -57,14 +65,13 @@ void main() {
     mockTokenCall().thenThrow(Exception());
   }
 
+  void mockResponseError(HttpError error) {
+    mockHttpResponseCall().thenThrow(error);
+  }
+
   void mockHttpResponse() {
     httpResponse = faker.randomGenerator.string(50);
-    when(httpClient.request(
-            url: anyNamed('url'),
-            method: anyNamed('method'),
-            body: anyNamed('body'),
-            headers: anyNamed('headers')))
-        .thenAnswer((_) async => httpResponse);
+    mockHttpResponseCall().thenAnswer((_) async => httpResponse);
   }
 
   setUp(() {
@@ -124,5 +131,13 @@ void main() {
     final future = sut.request(url: url, method: method, body: body);
 
     expect(future, throwsA(HttpError.forbidden));
+  });
+
+  test('Should rethrow if decoratee throws', () async {
+    mockResponseError(HttpError.badRequest);
+
+    final future = sut.request(url: url, method: method, body: body);
+
+    expect(future, throwsA(HttpError.badRequest));
   });
 }
