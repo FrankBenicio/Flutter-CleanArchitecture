@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:meta/meta.dart';
 
-class AuthorizeHttpClientDecorator implements HttpClient{
+class AuthorizeHttpClientDecorator implements HttpClient {
   final FetchSecureCacheStorage fetchSecureCacheStorage;
   final HttpClient decoratee;
 
@@ -18,10 +18,15 @@ class AuthorizeHttpClientDecorator implements HttpClient{
     Map body,
     Map headers,
   }) async {
+    try{
     final token = await fetchSecureCacheStorage.fetchSecure('token');
-    final authorizedHeaders = headers ?? {}..addAll({'x-access-token': token});
-   return await decoratee.request(
+    final authorizedHeaders = headers ?? {}
+      ..addAll({'x-access-token': token});
+    return await decoratee.request(
         url: url, method: method, body: body, headers: authorizedHeaders);
+    } catch (error){
+      throw HttpError.forbidden;
+    }
   }
 }
 
@@ -40,18 +45,25 @@ void main() {
   String token;
   String httpResponse;
 
+  PostExpectation mockTokenCall() =>
+      when(fetchSecureCacheStorage.fetchSecure(any));
+
   void mockToken() {
     token = faker.guid.guid();
-    when(fetchSecureCacheStorage.fetchSecure(any))
-        .thenAnswer((_) async => token);
+    mockTokenCall().thenAnswer((_) async => token);
+  }
+
+  void mockTokenError() {
+    mockTokenCall().thenThrow(Exception());
   }
 
   void mockHttpResponse() {
     httpResponse = faker.randomGenerator.string(50);
-    when(httpClient.request(url: anyNamed('url'),
-      method: anyNamed('method'),
-      body: anyNamed('body'),
-      headers: anyNamed('headers')))
+    when(httpClient.request(
+            url: anyNamed('url'),
+            method: anyNamed('method'),
+            body: anyNamed('body'),
+            headers: anyNamed('headers')))
         .thenAnswer((_) async => httpResponse);
   }
 
@@ -86,7 +98,8 @@ void main() {
         body: body,
         headers: {'x-access-token': token})).called(1);
 
-    await sut.request(url: url,
+    await sut.request(
+        url: url,
         method: method,
         body: body,
         headers: {'Any_key': 'Any_value'});
@@ -98,10 +111,18 @@ void main() {
         headers: {'x-access-token': token, 'Any_key': 'Any_value'})).called(1);
   });
 
-
   test('Should return same result as decoratee', () async {
     final response = await sut.request(url: url, method: method, body: body);
 
     expect(response, httpResponse);
+  });
+
+  test('Should throw ForbiddenError if FetchSecureCacheStorage throws',
+      () async {
+    mockTokenError();
+
+    final future = sut.request(url: url, method: method, body: body);
+
+    expect(future, throwsA(HttpError.forbidden));
   });
 }
