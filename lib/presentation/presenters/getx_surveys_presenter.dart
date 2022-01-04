@@ -12,16 +12,12 @@ class GetXSurveysPresenter implements SurveysPresenter{
   final _isLoading = true.obs;
   final _surveys = Rx<List<SurveyViewModel>>();
 
-  Stream<bool> get isLoadingStream => _isLoading.stream;
-
   Stream<List<SurveyViewModel>> get loadSurveysStream => _surveys.stream;
 
   GetXSurveysPresenter({@required this.loadSurveys});
 
   Future<void> loadData() async {
     try {
-      _isLoading.value = true;
-
       final surveys = await loadSurveys.load();
 
       _surveys.value = surveys
@@ -33,8 +29,6 @@ class GetXSurveysPresenter implements SurveysPresenter{
           .toList();
     } on DomainError {
       _surveys.subject.addError(UIError.unexpected.description);
-    } finally {
-      _isLoading.value = false;
     }
   }
 }
