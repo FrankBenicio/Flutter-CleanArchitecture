@@ -25,7 +25,7 @@ class GetXSurveysPresenter implements SurveysPresenter{
       final surveys = await loadSurveys.load();
 
       _surveys.value = surveys
-          .map((survey) => SurveyViewModel(
+          .map<SurveyViewModel>((survey) => SurveyViewModel(
           id: survey.id,
           question: survey.question,
           date: DateFormat('dd MMM yyyy').format(survey.dateTime),
